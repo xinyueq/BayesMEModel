@@ -9,7 +9,7 @@ The `BayesMEModel` R package presents a comprehensive suite of functions tailore
 You can install the package using the `devtools` library:
 
 ```{r}
-devtools::install_github("path/BayesMEModel")
+devtools::install_github("xinyueq/BayesMEModel")
 ```
 Package can be loaded into R as follows:
 
