@@ -1,0 +1,99 @@
+```{r}
+library(dplyr)
+library('rstan')
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
+
+raw_data <- read.csv(file = 'Y_Y_p.csv')
+Y_p = raw_data$Y_p
+Y = raw_data$Y
+```
+
+## Load Stan models
+
+```{r}
+model_list <- load_stan_models()
+```
+
+## Linear Regression Example
+
+### simulate linear regression data
+
+```{r}
+eps = rnorm(10000)
+gamma = 0.1
+Z <- Y * gamma + eps
+```
+
+### fit linear regression, regressing Z on Y
+```{r}
+Y_fit <- fit_linear_regression(model_list$LinReg, N=10000, x=Y, y=Z)
+summary(Y_fit, pars = "beta")[[1]]
+```
+
+### fit linear regression, regressing Z on Yp
+```{r}
+Yp_fit <- fit_linear_regression(model_list$LinReg, N=10000, x=Y_p, y=Z)
+summary(Yp_fit, pars = "beta")[[1]]
+```
+
+### find "a" and "tau" between Y and Yp
+```{r}
+est_a <- lm(Y_p ~ Y)
+a <- coef(est_a)["Y"]
+
+tau_fit <- fit_tau(model_list$tau, N = 10000, Y = Y, Yp = Y_p, a = a)
+tau <- summary(tau_fit, pars = "tau")[[1]][1]
+```
+
+### fit linear regression measurement error correction model, regressing Z on Yp
+```{r}
+linregME_fit <- fit_linear_regression_ME(model_list$LinRegME, N=10000, x_meas=Y_p, y=Z, a=a, tau=tau)
+summary(linregME_fit, pars = "beta")[[1]]
+```
+
+
+## Logistic Regression Example
+
+### simulate logistic regression data
+
+```{r}
+eps = rnorm(10000)
+gamma <- 0.1
+log_odds <- Y * gamma
+p <- exp(log_odds) / (1+exp(log_odds))
+rand_nums <- runif(10000)
+Z = as.integer(rand_nums < p)
+```
+
+### fit logistic regression, regressing Z on Y
+```{r}
+Y_fit <- fit_logistic_regression(model_list$LogisticReg, N=10000, x=Y, y=Z)
+summary(Y_fit, pars = "beta")[[1]]
+```
+
+### fit logistic regression, regressing Z on Yp
+```{r}
+Yp_fit <- fit_logistic_regression(model_list$LogisticReg, N=10000, x=Y_p, y=Z)
+summary(Yp_fit, pars = "beta")[[1]]
+```
+
+### find "a" and "tau" between Y and Yp
+```{r}
+est_a <- lm(Y_p ~ Y)
+a <- coef(est_a)["Y"]
+
+tau_fit <- fit_tau(model_list$tau, N = 10000, Y = Y, Yp = Y_p, a = a)
+tau <- summary(tau_fit, pars = "tau")[[1]][1]
+```
+
+### fit logistic regression measurement error correction model, regressing Z on Yp
+```{r}
+logisticRegME_fit <- fit_logistic_regression_ME(model_list$LogisticRegME, 
+                                                N = 10000, 
+                                                x_meas = Y_p, 
+                                                y = Z, 
+                                                a = a, 
+                                                tau = tau)
+summary(logisticRegME_fit, pars = "beta")[[1]]
+```
