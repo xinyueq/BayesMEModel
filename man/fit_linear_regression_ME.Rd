@@ -4,14 +4,18 @@
 \alias{fit_linear_regression_ME}
 \title{Fit and summarize the Linear Regression with Measurement Error Stan model}
 \usage{
-fit_linear_regression_ME(N, x_meas, y, a, tau)
+fit_linear_regression_ME(model, N, D, y, x_meas, x_in, a, tau)
 }
 \arguments{
 \item{N}{Number of observations.}
 
-\item{x_meas}{Measured independent variable.}
+\item{D}{Number of covariates, excluding the column with measurement noise}
 
 \item{y}{Dependent variable.}
+
+\item{x_meas}{Input vector with measurement noise.}
+
+\item{x_in}{Input matrix x_in for the additional D covariates, with dimensions N rows by D columns}
 
 \item{a}{Coefficient parameter.}
 

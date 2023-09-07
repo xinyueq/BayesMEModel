@@ -4,10 +4,12 @@
 \alias{fit_logistic_regression}
 \title{Fit and summarize the Logistic Regression Stan model}
 \usage{
-fit_logistic_regression(N, x, y)
+fit_logistic_regression(model, N, D, x, y)
 }
 \arguments{
 \item{N}{Number of observations.}
+
+\item{D}{Number of covariates.}
 
 \item{x}{Independent variable.}
 

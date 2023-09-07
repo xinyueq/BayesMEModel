@@ -1,9 +1,9 @@
 data {
   int<lower=0> N;
-  int<lower=0> D; # Number of covariates, excluding the column with measurement noise
+  int<lower=0> D; // Number of covariates, excluding the column with measurement noise
   int<lower=0,upper=1> y[N];
-  vector[N] x_meas; # Input vector with measurement noise
-  matrix[N, D] x_in; # Input matrix x_in for the additional D covariates, with dimensions N rows by D columns
+  vector[N] x_meas; // Input vector with measurement noise
+  matrix[N, D] x_in; // Input matrix x_in for the additional D covariates, with dimensions N rows by D columns
   real a;
   real<lower=0> tau;
 }

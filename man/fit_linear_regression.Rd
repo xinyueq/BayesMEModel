@@ -4,10 +4,14 @@
 \alias{fit_linear_regression}
 \title{Fit and summarize the Linear Regression Stan model}
 \usage{
-fit_linear_regression(N, x, y)
+fit_linear_regression(model, N, D, x, y)
 }
 \arguments{
+\item{model}{Compiled Stan model for Linear Regression.}
+
 \item{N}{Number of observations.}
+
+\item{D}{Number of covariates.}
 
 \item{x}{Independent variable.}
 
@@ -17,5 +21,5 @@ fit_linear_regression(N, x, y)
 Summary of the fit.
 }
 \description{
-This function fits the Linear Regression Stan model and returns the summary.
+This function fits the provided Linear Regression Stan model and returns the summary.
 }

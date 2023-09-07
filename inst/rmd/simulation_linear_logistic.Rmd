@@ -27,13 +27,15 @@ Z <- Y * gamma + eps
 
 ### fit linear regression, regressing Z on Y
 ```{r}
-Y_fit <- fit_linear_regression(model_list$LinReg, N=10000, x=Y, y=Z)
+x_in = cbind(Y)
+Y_fit <- fit_linear_regression(model_list$LinReg, N=10000, D = 1, x = x_in, y = Z)
 summary(Y_fit, pars = "beta")[[1]]
 ```
 
 ### fit linear regression, regressing Z on Yp
 ```{r}
-Yp_fit <- fit_linear_regression(model_list$LinReg, N=10000, x=Y_p, y=Z)
+x_in = cbind(Y_p)
+Yp_fit <- fit_linear_regression(model_list$LinReg, N=10000, D = 1, x = x_in, y=Z)
 summary(Yp_fit, pars = "beta")[[1]]
 ```
 
@@ -48,8 +50,14 @@ tau <- summary(tau_fit, pars = "tau")[[1]][1]
 
 ### fit linear regression measurement error correction model, regressing Z on Yp
 ```{r}
-linregME_fit <- fit_linear_regression_ME(model_list$LinRegME, N=10000, x_meas=Y_p, y=Z, a=a, tau=tau)
-summary(linregME_fit, pars = "beta")[[1]]
+x_in <- matrix(nrow = 10000, ncol = 0)
+linregME_fit <- fit_linear_regression_ME(model_list$LinRegME, 
+                                         N=10000, D = 0, 
+                                         x_meas=Y_p,
+                                         x_in = x_in,
+                                         y=Z, 
+                                         a=a, tau=tau)
+summary(linregME_fit, pars = "beta_meas")[[1]]
 ```
 
 
@@ -68,13 +76,15 @@ Z = as.integer(rand_nums < p)
 
 ### fit logistic regression, regressing Z on Y
 ```{r}
-Y_fit <- fit_logistic_regression(model_list$LogisticReg, N=10000, x=Y, y=Z)
+x_in = cbind(Y)
+Y_fit <- fit_logistic_regression(model_list$LogisticReg, N=10000, D = 1, x = x_in, y=Z)
 summary(Y_fit, pars = "beta")[[1]]
 ```
 
 ### fit logistic regression, regressing Z on Yp
 ```{r}
-Yp_fit <- fit_logistic_regression(model_list$LogisticReg, N=10000, x=Y_p, y=Z)
+x_in = cbind(Y_p)
+Yp_fit <- fit_logistic_regression(model_list$LogisticReg, N=10000, D = 1, x = x_in, y=Z)
 summary(Yp_fit, pars = "beta")[[1]]
 ```
 
@@ -89,11 +99,12 @@ tau <- summary(tau_fit, pars = "tau")[[1]][1]
 
 ### fit logistic regression measurement error correction model, regressing Z on Yp
 ```{r}
+x_in <- matrix(nrow = 10000, ncol = 0)
 logisticRegME_fit <- fit_logistic_regression_ME(model_list$LogisticRegME, 
-                                                N = 10000, 
-                                                x_meas = Y_p, 
-                                                y = Z, 
-                                                a = a, 
-                                                tau = tau)
-summary(logisticRegME_fit, pars = "beta")[[1]]
+                                                N=10000, D = 0, 
+                                                x_meas=Y_p,
+                                                x_in = x_in,
+                                                y=Z,
+                                                a=a, tau=tau)
+summary(logisticRegME_fit, pars = "beta_meas")[[1]]
 ```

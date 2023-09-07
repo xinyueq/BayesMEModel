@@ -1,0 +1,23 @@
+---
+title: "Introduction to BayesMEModel"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to BayesMEModel}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(BayesMEModel)
+```
+
+## Examples of BayesMEModel Application on a Simulated Dataset
+
+
