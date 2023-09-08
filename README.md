@@ -24,7 +24,8 @@ library('BayesMEModel')
   - Required Inputs:
     + **model**: Compiled Stan model for Linear Regression or Logistic Regression.
     + **N**: Number of observations.
-    + **x**: Independent variable.
+    + **D**: Number of input variables.
+    + **x**: Independent variable of dimension N by D.
     + **y**: Dependent variable.
   
   - Purpose: This function fits the provided Stan model for either Linear Regression or Logistic Regression and returns the summary of the fit.
@@ -36,7 +37,9 @@ library('BayesMEModel')
   + Required Inputs:
     - **model**: Compiled Stan model for the corresponding regression type.
     - **N**: Number of observations.
-    - **x_meas**: Measured independent variable (typically subject to measurement noise).
+    - **D**: Number of covariates, excluding the column with measurement noise.
+    - **x_meas**: Input measured independent variable vector with the presence of measurement error".
+    - **x_in**: Input matrix x_in for the additional D covariates, with dimensions N by D.
     - **y**: Dependent variable.
     - **a**: Coefficient parameter between true data and observed data *x_meas* subjected to measurement noise.
     - **tau**: parameter that depicts the measurement noise between true and observed data *x_meas*.
