@@ -4,18 +4,18 @@
 \alias{fit_tau}
 \title{Fit and summarize the Tau Stan model}
 \usage{
-fit_tau(model, N, Y, Yp, a)
+fit_tau(model, N, Z, Zp, a)
 }
 \arguments{
 \item{model}{Compiled Stan model for Tau.}
 
 \item{N}{Number of observations.}
 
+\item{a}{Coefficient parameter.}
+
 \item{Y}{Dependent variable.}
 
 \item{Yp}{Measured dependent variable.}
-
-\item{a}{Coefficient parameter.}
 }
 \value{
 Summary of the fit.

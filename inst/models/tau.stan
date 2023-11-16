@@ -1,8 +1,8 @@
 data {
   int<lower=0> N;  // Number of observations
   real a;
-  real Y[N];       // Observed array Y
-  real Yp[N];      // Observed array Yp
+  real Z[N];       // Observed array Z
+  real Zp[N];      // Observed array Zp
 }
 
 parameters {
@@ -10,15 +10,13 @@ parameters {
 }
 
 model {
+
   // Prior distribution for tau
-  //tau ~ cauchy(0,5);  // (0,25) You can adjust the scale parameter as needed
-  //tau ~ gamma(10,2);
-  tau ~ inv_gamma(0.1, 0.1); //(.1, 0.1) (.01, .01)
-  //tau ~ inversegamma
-  
+  tau ~ inv_gamma(0.1, 0.1);
+
   // Likelihood
   for (n in 1:N) {
-    Yp[n] ~ normal(a * Y[n], tau);
+    Zp[n] ~ normal(a * Z[n], tau);
   }
 }
 

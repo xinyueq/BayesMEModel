@@ -4,9 +4,9 @@ library('rstan')
 options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 
-raw_data <- read.csv(file = 'Y_Y_p.csv')
-Y_p = raw_data$Y_p
-Y = raw_data$Y
+raw_data <- read.csv(file = 'sample_data.csv')
+Z_p = raw_data$Z_p
+Z = raw_data$Z
 ```
 
 ## Load Stan models
@@ -22,44 +22,42 @@ model_list <- load_stan_models()
 ```{r}
 eps = rnorm(10000)
 gamma = 0.1
-Z <- Y * gamma + eps
+Y <- Z * gamma + eps
 ```
 
-### fit linear regression, regressing Z on Y
+### fit linear regression, regressing Y on Z
 ```{r}
-x_in = cbind(Y)
-Y_fit <- fit_linear_regression(model_list$LinReg, N=10000, D = 1, x = x_in, y = Z)
+x_in = cbind(Z)
+Y_fit <- fit_linear_regression(model_list$LinReg, N=10000, D = 1, x = x_in, y = Y)
 summary(Y_fit, pars = "beta")[[1]]
 ```
-
-### fit linear regression, regressing Z on Yp
+### fit linear regression, regressing Y on Z_p
 ```{r}
-x_in = cbind(Y_p)
-Yp_fit <- fit_linear_regression(model_list$LinReg, N=10000, D = 1, x = x_in, y=Z)
+x_in = cbind(Z_p)
+Yp_fit <- fit_linear_regression(model_list$LinReg, N=10000, D = 1, x = x_in, y = Y)
 summary(Yp_fit, pars = "beta")[[1]]
 ```
 
-### find "a" and "tau" between Y and Yp
+### find "a" and "tau" between Z and Zp
 ```{r}
-est_a <- lm(Y_p ~ Y)
-a <- coef(est_a)["Y"]
+est_a <- lm(Z_p ~ Z)
+a <- coef(est_a)["Z"]
 
-tau_fit <- fit_tau(model_list$tau, N = 10000, Y = Y, Yp = Y_p, a = a)
+tau_fit <- fit_tau(model_list$tau, N = 10000, Z = Z, Zp = Z_p, a = a)
 tau <- summary(tau_fit, pars = "tau")[[1]][1]
 ```
 
-### fit linear regression measurement error correction model, regressing Z on Yp
+### fit linear regression measurement error correction model, regressing Y on Zp
 ```{r}
 x_in <- matrix(nrow = 10000, ncol = 0)
 linregME_fit <- fit_linear_regression_ME(model_list$LinRegME, 
                                          N=10000, D = 0, 
-                                         x_meas=Y_p,
+                                         x_meas=Z_p,
                                          x_in = x_in,
-                                         y=Z, 
+                                         y=Y, 
                                          a=a, tau=tau)
 summary(linregME_fit, pars = "beta_meas")[[1]]
 ```
-
 
 ## Logistic Regression Example
 
@@ -68,32 +66,32 @@ summary(linregME_fit, pars = "beta_meas")[[1]]
 ```{r}
 eps = rnorm(10000)
 gamma <- 0.1
-log_odds <- Y * gamma
+log_odds <- Z * gamma
 p <- exp(log_odds) / (1+exp(log_odds))
 rand_nums <- runif(10000)
-Z = as.integer(rand_nums < p)
+Y = as.integer(rand_nums < p)
 ```
 
-### fit logistic regression, regressing Z on Y
+### fit logistic regression, regressing Y on Z
 ```{r}
-x_in = cbind(Y)
-Y_fit <- fit_logistic_regression(model_list$LogisticReg, N=10000, D = 1, x = x_in, y=Z)
+x_in = cbind(Z)
+Y_fit <- fit_logistic_regression(model_list$LogisticReg, N=10000, D = 1, x = x_in, y=Y)
 summary(Y_fit, pars = "beta")[[1]]
 ```
 
-### fit logistic regression, regressing Z on Yp
+### fit logistic regression, regressing Y on Zp
 ```{r}
-x_in = cbind(Y_p)
-Yp_fit <- fit_logistic_regression(model_list$LogisticReg, N=10000, D = 1, x = x_in, y=Z)
+x_in = cbind(Z_p)
+Yp_fit <- fit_logistic_regression(model_list$LogisticReg, N=10000, D = 1, x = x_in, y=Y)
 summary(Yp_fit, pars = "beta")[[1]]
 ```
 
-### find "a" and "tau" between Y and Yp
+### find "a" and "tau" between Z and Zp
 ```{r}
-est_a <- lm(Y_p ~ Y)
+est_a <- lm(Z_p ~ Z)
 a <- coef(est_a)["Y"]
 
-tau_fit <- fit_tau(model_list$tau, N = 10000, Y = Y, Yp = Y_p, a = a)
+tau_fit <- fit_tau(model_list$tau, N = 10000, Z = Z, Zp = Z_p, a = a)
 tau <- summary(tau_fit, pars = "tau")[[1]][1]
 ```
 
@@ -102,9 +100,9 @@ tau <- summary(tau_fit, pars = "tau")[[1]][1]
 x_in <- matrix(nrow = 10000, ncol = 0)
 logisticRegME_fit <- fit_logistic_regression_ME(model_list$LogisticRegME, 
                                                 N=10000, D = 0, 
-                                                x_meas=Y_p,
+                                                x_meas=Z_p,
                                                 x_in = x_in,
-                                                y=Z,
+                                                y=Y,
                                                 a=a, tau=tau)
 summary(logisticRegME_fit, pars = "beta_meas")[[1]]
 ```

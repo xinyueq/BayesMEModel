@@ -116,8 +116,8 @@ fit_logistic_regression_ME <- function(model, N, D, y, x_meas, x_in, a, tau) {
 #' @return Summary of the fit.
 #'
 #' @export
-fit_tau <- function(model, N, Y, Yp, a) {
-  tau_data <- list(N = N, Y = Y, Yp = Yp, a = a)
+fit_tau <- function(model, N, Z, Zp, a) {
+  tau_data <- list(N = N, Z = Z, Zp = Zp, a = a)
   fit <- sampling(model, data = tau_data)
   return(fit)
 }
