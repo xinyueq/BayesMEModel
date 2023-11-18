@@ -31,6 +31,7 @@ x_in = cbind(Z)
 Y_fit <- fit_linear_regression(model_list$LinReg, N=10000, D = 1, x = x_in, y = Y)
 summary(Y_fit, pars = "beta")[[1]]
 ```
+
 ### fit linear regression, regressing Y on Z_p
 ```{r}
 x_in = cbind(Z_p)
@@ -89,7 +90,7 @@ summary(Yp_fit, pars = "beta")[[1]]
 ### find "a" and "tau" between Z and Zp
 ```{r}
 est_a <- lm(Z_p ~ Z)
-a <- coef(est_a)["Y"]
+a <- coef(est_a)["Z"]
 
 tau_fit <- fit_tau(model_list$tau, N = 10000, Z = Z, Zp = Z_p, a = a)
 tau <- summary(tau_fit, pars = "tau")[[1]][1]
